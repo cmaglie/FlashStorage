@@ -24,6 +24,9 @@ of the micro the number of calls to `write` stay well below the above limit
 of 10000 (it's a good rule-of-thumb to keep that number in mind even if the
 manufacturer of the micro guarantees a bigger number of cycles).
 
+The same caution must be taken if you're using the EEPROM API emulation (see
+below) with the `EEPROM.commit()` function.
+
 ## Usage
 
 First of all you must declare a global `FlashStorage` object for each piece of
@@ -53,6 +56,17 @@ after a reset of the microcontroller to retrieve the stored age you can use:
 int user_age = age_storage.read();
 ```
 
+### Using the alternative EEPROM-like API
+
+If you include `FlashAsEEPROM.h` you'll get an EEPROM emulation with the internal flash memory.
+See [EmulateEEPROM](https://github.com/cmaglie/FlashStorage/tree/master/examples/EmulateEEPROM/EmulateEEPROM.ino) sketch for an example.
+
+The API is very similar to the well known Arduino EEPROM.h API but with three additional functions:
+
+* `EEPROM.init()` initialize the EEPROM emulation. This has to be called once on startup, ideally in `setup()`.
+* `EEPROM.isValid()` returns `true` if data in the EEPROM is valid or, in other words, if the data has been written at least once. Otherwise EEPROM data is "undefined" and the function returns `false`.
+* `EEPROM.commit()` store the EEPROM data in flash. Use this with care: Every call writes the complete EEPROM data to flash. This will reduce the remainig flash-write-cycles. Don't call this method in a loop or [you will kill your flash soon](https://github.com/cmaglie/FlashStorage#limited-number-of-writes).
+
 ## License
 
 This library is released under LGPL-2.1.
@@ -62,8 +76,8 @@ This library is released under LGPL-2.1.
 ### Can I use a single FlashStorage object to store more stuff?
 
 Yes, you can declare a `struct` with more fields and create a `FlashStorage` object to
-store the entire structure. See the [StoreNameAndSurname](https://github.com/cmaglie/FlashStorage/tree/master/examples/StoreNameAndSurname)
-for an example on how to do it.
+store the entire structure. See the [StoreNameAndSurname](https://github.com/cmaglie/FlashStorage/tree/master/examples/StoreNameAndSurname/StoreNameAndSurname.ino)
+sketch for an example on how to do it.
 
 ### The content of the FlashStorage is erased each time a new sketch is uploaded?
 
