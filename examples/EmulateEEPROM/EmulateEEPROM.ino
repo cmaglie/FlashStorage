@@ -11,9 +11,6 @@
 #include <FlashAsEEPROM.h>
 
 void setup() {
-  // Initialize EEPROM
-  EEPROM.init();
-
   Serial.begin(9600);
 
   // If the EEPROM is empty then isValid() is false

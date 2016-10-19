@@ -61,9 +61,8 @@ int user_age = age_storage.read();
 If you include `FlashAsEEPROM.h` you'll get an EEPROM emulation with the internal flash memory.
 See [EmulateEEPROM](https://github.com/cmaglie/FlashStorage/tree/master/examples/EmulateEEPROM/EmulateEEPROM.ino) sketch for an example.
 
-The API is very similar to the well known Arduino EEPROM.h API but with three additional functions:
+The API is very similar to the well known Arduino EEPROM.h API but with two additional functions:
 
-* `EEPROM.init()` initialize the EEPROM emulation. This has to be called once on startup, ideally in `setup()`.
 * `EEPROM.isValid()` returns `true` if data in the EEPROM is valid or, in other words, if the data has been written at least once, otherwise EEPROM data is "undefined" and the function returns `false`.
 * `EEPROM.commit()` store the EEPROM data in flash. Use this with care: Every call writes the complete EEPROM data to flash. This will reduce the remainig flash-write-cycles. Don't call this method in a loop or [you will kill your flash soon](https://github.com/cmaglie/FlashStorage#limited-number-of-writes).
 

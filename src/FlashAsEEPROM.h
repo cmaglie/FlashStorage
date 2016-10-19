@@ -67,17 +67,15 @@ class EEPROMClass {
     bool isValid();
 
     /**
-     * Initializes the eeprom by reading it's data from flash. This has to be done BEFORE eeprom is used
-     */
-    void init();
-
-    /**
      * Write previously made eeprom changes to the underlying flash storage
      * Use this with care: Each and every commit will harm the flash and reduce it's lifetime (like with every flash memory)
      */
     void commit();
 
-  protected:
+  private:
+    void init();
+
+    bool _initialized;
     EEPROM_EMULATION _eeprom;
     bool _dirty;
 };

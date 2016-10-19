@@ -23,38 +23,44 @@
 
 FlashStorage(eeprom_storage, EEPROM_EMULATION);
 
-EEPROMClass::EEPROMClass(void) : _dirty(false) {
+EEPROMClass::EEPROMClass(void) : _initialized(false), _dirty(false) {
   // Empty
 }
 
 uint8_t EEPROMClass::read(int address)
 {
+  if (!_initialized) init();
   return _eeprom.data[address];
 }
 
 void EEPROMClass::write(int address, uint8_t value)
 {
+  if (!_initialized) init();
   _dirty = true;
   _eeprom.data[address] = value;
 }
 
 void EEPROMClass::update(int address, uint8_t value)
 {
+  if (!_initialized) init();
   _eeprom.data[address] = value;
 }
 
 void EEPROMClass::init()
 {
   _eeprom = eeprom_storage.read();
+  _initialized = true;
 }
 
 bool EEPROMClass::isValid()
 {
+  if (!_initialized) init();
   return _eeprom.valid;
 }
 
 void EEPROMClass::commit()
 {
+  if (!_initialized) init();
   if (_dirty) {
     _eeprom.valid = true;
     eeprom_storage.write(_eeprom);
