@@ -21,13 +21,10 @@
 
 #include "FlashAsEEPROM.h"
 
-FlashStorage(my_flash_ptr, EEPROM_EMULATION);
+FlashStorage(eeprom_storage, EEPROM_EMULATION);
 
-EEPROMClass::EEPROMClass(void) {
-  _dirty = false;
-  _eeprom.valid = false;
-
-  _flash = &my_flash_ptr;
+EEPROMClass::EEPROMClass(void) : _dirty(false) {
+  // Empty
 }
 
 uint8_t EEPROMClass::read(int address)
@@ -48,7 +45,7 @@ void EEPROMClass::update(int address, uint8_t value)
 
 void EEPROMClass::init()
 {
-  _eeprom = _flash->read();
+  _eeprom = eeprom_storage.read();
 }
 
 bool EEPROMClass::isValid()
@@ -59,8 +56,8 @@ bool EEPROMClass::isValid()
 void EEPROMClass::commit()
 {
   if (_dirty) {
-    _eeprom.valid=true;
-    _flash->write(_eeprom);
+    _eeprom.valid = true;
+    eeprom_storage.write(_eeprom);
   }
 }
 

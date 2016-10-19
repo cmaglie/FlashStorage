@@ -80,7 +80,6 @@ class EEPROMClass {
   protected:
     EEPROM_EMULATION _eeprom;
     bool _dirty;
-    FlashStorageClass<EEPROM_EMULATION> *_flash;
 };
 
 extern EEPROMClass EEPROM;
