@@ -64,7 +64,7 @@ See [EmulateEEPROM](https://github.com/cmaglie/FlashStorage/tree/master/examples
 The API is very similar to the well known Arduino EEPROM.h API but with three additional functions:
 
 * `EEPROM.init()` initialize the EEPROM emulation. This has to be called once on startup, ideally in `setup()`.
-* `EEPROM.isValid()` returns `true` if data in the EEPROM is valid or, in other words, if the data has been written at least once. Otherwise EEPROM data is "undefined" and the function returns `false`.
+* `EEPROM.isValid()` returns `true` if data in the EEPROM is valid or, in other words, if the data has been written at least once, otherwise EEPROM data is "undefined" and the function returns `false`.
 * `EEPROM.commit()` store the EEPROM data in flash. Use this with care: Every call writes the complete EEPROM data to flash. This will reduce the remainig flash-write-cycles. Don't call this method in a loop or [you will kill your flash soon](https://github.com/cmaglie/FlashStorage#limited-number-of-writes).
 
 ## License
