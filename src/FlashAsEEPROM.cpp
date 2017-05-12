@@ -44,7 +44,7 @@ void EEPROMClass::update(int address, uint8_t value)
 
 void EEPROMClass::write(int address, uint8_t value)
 {
-  update(int address, uint8_t value)
+  update(address, value);
 }
 
 void EEPROMClass::init()
