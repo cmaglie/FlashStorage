@@ -33,17 +33,18 @@ uint8_t EEPROMClass::read(int address)
   return _eeprom.data[address];
 }
 
-void EEPROMClass::write(int address, uint8_t value)
-{
-  if (!_initialized) init();
-  _dirty = true;
-  _eeprom.data[address] = value;
-}
-
 void EEPROMClass::update(int address, uint8_t value)
 {
   if (!_initialized) init();
-  _eeprom.data[address] = value;
+  if (_eeprom.data[address] != value) {
+    _dirty = true;
+    _eeprom.data[address] = value;
+  }
+}
+
+void EEPROMClass::write(int address, uint8_t value)
+{
+  update(int address, uint8_t value)
 }
 
 void EEPROMClass::init()
