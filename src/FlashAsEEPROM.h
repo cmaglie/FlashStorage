@@ -72,6 +72,8 @@ class EEPROMClass {
      */
     void commit();
 
+    uint16_t length() { return EEPROM_EMULATION_SIZE; }
+
   private:
     void init();
 
