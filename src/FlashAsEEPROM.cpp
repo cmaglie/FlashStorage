@@ -38,6 +38,7 @@ void EEPROMClass::update(int address, uint8_t value)
   if (!_initialized) init();
   if (_eeprom.data[address] != value) {
     _dirty = true;
+    _eeprom.valid = false;
     _eeprom.data[address] = value;
   }
 }
@@ -59,12 +60,19 @@ bool EEPROMClass::isValid()
   return _eeprom.valid;
 }
 
+uint16_t EEPROMClass::getFlashWritings()
+{
+  return _writings;
+}
+
 void EEPROMClass::commit()
 {
   if (!_initialized) init();
   if (_dirty) {
-    _eeprom.valid = true;
     eeprom_storage.write(_eeprom);
+    _dirty = false;
+    _eeprom.valid = true;
+    _writings++;
   }
 }
 

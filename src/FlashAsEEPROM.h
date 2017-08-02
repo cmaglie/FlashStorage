@@ -30,7 +30,7 @@
 
 typedef struct {
   byte data[EEPROM_EMULATION_SIZE];
-  boolean valid;
+  boolean valid = false;
 } EEPROM_EMULATION;
 
 
@@ -71,13 +71,22 @@ class EEPROMClass {
      * Use this with care: Each and every commit will harm the flash and reduce it's lifetime (like with every flash memory)
      */
     void commit();
+    
+    uint16_t length() { return EEPROM_EMULATION_SIZE; }    
 
-  private:
+    /**
+     * Return the number of physical write accesses to the flash since programm start.
+     * Use this if you want to check if flash lifetime is in danger.
+     */
+    uint16_t getFlashWritings();
+
+    private:
     void init();
 
-    bool _initialized;
+    bool _initialized;  // Flash contents have been copied to buffer. Buffer = valid.
     EEPROM_EMULATION _eeprom;
-    bool _dirty;
+    bool _dirty;  // Changes are pending to be physically written to flash
+    uint16_t _writings;  // How often was the flash actually written?
 };
 
 extern EEPROMClass EEPROM;
