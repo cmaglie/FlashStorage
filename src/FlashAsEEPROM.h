@@ -60,6 +60,11 @@ class EEPROMClass {
      */
     void update(int, uint8_t);
 
+    /*
+     * Returns the pointer to the eeprom data.
+     **/
+    uint8_t* getDataPtr();
+    
     /**
      * Check whether the eeprom data is valid
      * @return true, if eeprom data is valid (has been written at least once), false if not
