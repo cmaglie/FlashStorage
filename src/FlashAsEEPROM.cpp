@@ -58,6 +58,7 @@ void EEPROMClass::init()
 
 uint8_t * EEPROMClass::getDataPtr()
 {
+    if (!_initialized) init();
     _dirty = true;
     return _eeprom.data;
 }
