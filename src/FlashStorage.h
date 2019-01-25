@@ -25,7 +25,18 @@
 #define PPCAT_NX(A, B) A ## B
 #define PPCAT(A, B) PPCAT_NX(A, B)
 
-#define Flash(name, size) \
+#if defined(__SAMD51__)
+  #define Flash(name, size) \
+  __attribute__((__aligned__(8192))) \
+  static const uint8_t PPCAT(_data,name)[(size+8191)/8192*8192] = { }; \
+  FlashClass name(PPCAT(_data,name), size);
+
+#define FlashStorage(name, T) \
+  __attribute__((__aligned__(8192))) \
+  static const uint8_t PPCAT(_data,name)[(sizeof(T)+8191)/8192*8192] = { }; \
+  FlashStorageClass<T> name(PPCAT(_data,name));
+#else
+  #define Flash(name, size) \
   __attribute__((__aligned__(256))) \
   static const uint8_t PPCAT(_data,name)[(size+255)/256*256] = { }; \
   FlashClass name(PPCAT(_data,name), size);
@@ -34,6 +45,7 @@
   __attribute__((__aligned__(256))) \
   static const uint8_t PPCAT(_data,name)[(sizeof(T)+255)/256*256] = { }; \
   FlashStorageClass<T> name(PPCAT(_data,name));
+#endif
 
 class FlashClass {
 public:
