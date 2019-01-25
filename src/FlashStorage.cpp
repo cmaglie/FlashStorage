@@ -25,7 +25,11 @@ FlashClass::FlashClass(const void *flash_addr, uint32_t size) :
   PAGE_SIZE(pageSizes[NVMCTRL->PARAM.bit.PSZ]),
   PAGES(NVMCTRL->PARAM.bit.NVMP),
   MAX_FLASH(PAGE_SIZE * PAGES),
+#if defined(__SAMD51__)
+  ROW_SIZE(MAX_FLASH / 64),
+#else
   ROW_SIZE(PAGE_SIZE * 4),
+#endif
   flash_address((volatile void *)flash_addr),
   flash_size(size)
 {
@@ -103,11 +107,12 @@ void FlashClass::erase(const volatile void *flash_ptr, uint32_t size)
 
 void FlashClass::erase(const volatile void *flash_ptr)
 {
-  NVMCTRL->ADDR.reg = ((uint32_t)flash_ptr) / 2;
 #if defined(__SAMD51__)
+  NVMCTRL->ADDR.reg = ((uint32_t)flash_ptr);
   NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
   while (!NVMCTRL->INTFLAG.bit.DONE) { }
 #else
+  NVMCTRL->ADDR.reg = ((uint32_t)flash_ptr) / 2;
   NVMCTRL->CTRLA.reg = NVMCTRL_CTRLA_CMDEX_KEY | NVMCTRL_CTRLA_CMD_ER;
   while (!NVMCTRL->INTFLAG.bit.READY) { }
 #endif
