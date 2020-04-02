@@ -49,6 +49,19 @@ static inline uint32_t read_unaligned_uint32(const void *data)
   return res.u32;
 }
 
+#if defined(__SAMD51__)
+// Invalidate all CMCC cache entries if CMCC cache is enabled.
+static void invalidate_CMCC_cache()
+{
+  if (CMCC->CR.bit.CSTS) {
+    CMCC->CTRL.bit.CEN = 0;
+    while (CMCC->SR.bit.CSTS) {}
+    CMCC->MAINT0.bit.INVALL = 1;
+    CMCC->CTRL.bit.CEN = 1;
+  }
+}
+#endif
+
 void FlashClass::write(const volatile void *flash_ptr, const void *data, uint32_t size)
 {
   // Calculate data boundaries
@@ -59,6 +72,11 @@ void FlashClass::write(const volatile void *flash_ptr, const void *data, uint32_
   // Disable automatic page write
 #if defined(__SAMD51__)
   NVMCTRL->CTRLA.bit.WMODE = 0;
+  // Disable NVMCTRL cache while writing, per SAMD51 errata.
+  bool original_CACHEDIS0 = NVMCTRL->CTRLA.bit.CACHEDIS0;
+  bool original_CACHEDIS1 = NVMCTRL->CTRLA.bit.CACHEDIS1;
+  NVMCTRL->CTRLA.bit.CACHEDIS0 = true;
+  NVMCTRL->CTRLA.bit.CACHEDIS1 = true;
 #else
   NVMCTRL->CTRLB.bit.MANW = 1;
 #endif
@@ -87,6 +105,10 @@ void FlashClass::write(const volatile void *flash_ptr, const void *data, uint32_
 #if defined(__SAMD51__)
     NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_WP;
     while (NVMCTRL->INTFLAG.bit.DONE == 0) { }
+    invalidate_CMCC_cache();
+    // Restore original NVMCTRL cache settings.
+    NVMCTRL->CTRLA.bit.CACHEDIS0 = original_CACHEDIS0;
+    NVMCTRL->CTRLA.bit.CACHEDIS1 = original_CACHEDIS1;
 #else
     NVMCTRL->CTRLA.reg = NVMCTRL_CTRLA_CMDEX_KEY | NVMCTRL_CTRLA_CMD_WP;
     while (NVMCTRL->INTFLAG.bit.READY == 0) { }
@@ -111,6 +133,7 @@ void FlashClass::erase(const volatile void *flash_ptr)
   NVMCTRL->ADDR.reg = ((uint32_t)flash_ptr);
   NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
   while (!NVMCTRL->INTFLAG.bit.DONE) { }
+  invalidate_CMCC_cache();
 #else
   NVMCTRL->ADDR.reg = ((uint32_t)flash_ptr) / 2;
   NVMCTRL->CTRLA.reg = NVMCTRL_CTRLA_CMDEX_KEY | NVMCTRL_CTRLA_CMD_ER;
@@ -122,4 +145,3 @@ void FlashClass::read(const volatile void *flash_ptr, void *data, uint32_t size)
 {
   memcpy(data, (const void *)flash_ptr, size);
 }
-
