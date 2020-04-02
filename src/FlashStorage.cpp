@@ -72,6 +72,7 @@ void FlashClass::write(const volatile void *flash_ptr, const void *data, uint32_
   // Disable automatic page write
 #if defined(__SAMD51__)
   NVMCTRL->CTRLA.bit.WMODE = 0;
+  while (NVMCTRL->STATUS.bit.READY == 0) { }
   // Disable NVMCTRL cache while writing, per SAMD51 errata.
   bool original_CACHEDIS0 = NVMCTRL->CTRLA.bit.CACHEDIS0;
   bool original_CACHEDIS1 = NVMCTRL->CTRLA.bit.CACHEDIS1;
@@ -145,3 +146,4 @@ void FlashClass::read(const volatile void *flash_ptr, void *data, uint32_t size)
 {
   memcpy(data, (const void *)flash_ptr, size);
 }
+
