@@ -59,6 +59,7 @@ void FlashClass::write(const volatile void *flash_ptr, const void *data, uint32_
   // Disable automatic page write
 #if defined(__SAMD51__)
   NVMCTRL->CTRLA.bit.WMODE = 0;
+  while (NVMCTRL->STATUS.bit.READY == 0) { }
 #else
   NVMCTRL->CTRLB.bit.MANW = 1;
 #endif
