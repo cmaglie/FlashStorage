@@ -80,7 +80,8 @@ sketch for an example on how to do it.
 
 ### The content of the FlashStorage is erased each time a new sketch is uploaded?
 
-Yes, every time you upload a new sketch, the previous content of the FlashStorage is erased.
+Yes, every time you upload a new sketch, the previous content of the FlashStorage is erased and filled with 0's. The FlashStorage library does not allow to set another default value.
+
 
 ### Do you recommend to use FLASH instead of EEPROM?
 
