@@ -8,7 +8,7 @@ code, but it can also be used to store user data.
 
 ## Supported hardware
 
-Currently, only ATSAMD21 cpu is supported (and consequently every board based
+Currently, ATSAMD21 and ATSAMD51 cpu are supported (and consequently every board based	Currently, only ATSAMD21 cpu is supported (and consequently every board based
 on this cpu like the Arduino Zero or Aduino MKR1000).
 
 ## Limited number of writes
@@ -82,7 +82,7 @@ sketch for an example on how to do it.
 
 ### The content of the FlashStorage is erased each time a new sketch is uploaded?
 
-Yes, every time you upload a new sketch, the previous content of the FlashStorage is erased.
+Yes, every time you upload a new sketch, the previous content of the FlashStorage is erased and filled with 0's. The FlashStorage library does not allow to set another default value.
 
 ### Do you recommend to use FLASH instead of EEPROM?
 
