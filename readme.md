@@ -8,8 +8,7 @@ code, but it can also be used to store user data.
 
 ## Supported hardware
 
-Currently, ATSAMD21 and ATSAMD51 cpu are supported (and consequently every board based	Currently, only ATSAMD21 cpu is supported (and consequently every board based
-on this cpu like the Arduino Zero or Aduino MKR1000).
+Currently, ATSAMD21 and ATSAMD51 cpu are supported (and consequently every board based on this cpu like the Arduino Zero or Aduino MKR1000).
 
 ## Limited number of writes
 
