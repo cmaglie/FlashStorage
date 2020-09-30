@@ -11,7 +11,7 @@
 // Include EEPROM-like API for FlashStorage
 #include <FlashAsEEPROM.h>
 
-// Create a area in flash memory for EEPROM with 1024 bytes
+// Create an area in flash memory for EEPROM with 1024 bytes
 // Keep in mind that EEPROM is backed due to technical reasons
 // in RAM. EEPROM with 1024 bytes means: 
 // 1k of RAM just for accessing EEPROM
