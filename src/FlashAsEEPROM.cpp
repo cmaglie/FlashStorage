@@ -29,7 +29,7 @@ EEPROMClass::EEPROMClass(void) : _initialized(false), _dirty(false) {
 }
 
 uint8_t EEPROMClass::read(int address) {
-  // if not storage has been set or address is out of range -> just do nothing
+  // if no storage has been set or address is out of range -> just do nothing
   // and return 0
   if (flash_class == NULL || address >= flash_class->length())
     return 0;
@@ -40,7 +40,7 @@ uint8_t EEPROMClass::read(int address) {
 void EEPROMClass::write(int address, uint8_t value) { update(address, value); }
 
 void EEPROMClass::update(int address, uint8_t value) {
-  // if not storage has been set or address is out of range -> just do nothing
+  // if no storage has been set or address is out of range -> just do nothing
   if (flash_class == NULL || address >= flash_class->length())
     return;
 
@@ -54,7 +54,7 @@ bool EEPROMClass::isValid() { return eeprom_valid.read() == TRUE; }
 
 void EEPROMClass::commit() {
 
-  // if not storage has been set, just do nothing
+  // if no storage has been set, just do nothing
   if (flash_class == NULL)
     return;
 
@@ -70,7 +70,7 @@ void EEPROMClass::commit() {
       eeprom_valid.write((int)TRUE);
     }
 
-    _dirty = false; // toggle dirty bag to non-dirty
+    _dirty = false; // toggle dirty back to non-dirty
   }
 }
 
@@ -83,7 +83,7 @@ void EEPROMClass::setStorageForceValid(FlashClass *ptr) {
 
 void EEPROMClass::init() {
 
-  // if not storage has been set, just do nothing
+  // if no storage has been set, just do nothing
   if (flash_class == NULL)
     return;
 
