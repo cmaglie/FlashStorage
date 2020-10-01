@@ -2,7 +2,7 @@
   EEPROM like API that uses Arduino Zero's flash memory.
   Written by A. Christian
 
-  Copyright (c) 2015-2021 Arduino LLC.  All right reserved.
+  Copyright (c) 2015-2020 Arduino LLC.  All right reserved.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
