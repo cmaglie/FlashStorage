@@ -75,7 +75,9 @@ void EEPROMClass::commit() {
 }
 
 void EEPROMClass::setStorageForceValid(FlashClass *ptr) {
-  eeprom_valid.write((int)TRUE); // force valid flag to true
+  if (!isValid()) {
+    eeprom_valid.write((int)TRUE); // force valid flag to true
+  }
   setStorage(ptr);               // continue with normal setStorage() ...
 }
 
