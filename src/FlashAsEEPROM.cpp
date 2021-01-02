@@ -56,6 +56,13 @@ void EEPROMClass::init()
   _initialized = true;
 }
 
+uint8_t * EEPROMClass::getDataPtr()
+{
+    if (!_initialized) init();
+    _dirty = true;
+    return _eeprom.data;
+}
+
 bool EEPROMClass::isValid()
 {
   if (!_initialized) init();
