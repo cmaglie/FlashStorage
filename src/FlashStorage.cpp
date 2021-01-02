@@ -53,7 +53,7 @@ static inline uint32_t read_unaligned_uint32(const void *data)
 // Invalidate all CMCC cache entries if CMCC cache is enabled.
 static void invalidate_CMCC_cache()
 {
-  if (CMCC->CR.bit.CSTS) {
+  if (CMCC->SR.bit.CSTS) {
     CMCC->CTRL.bit.CEN = 0;
     while (CMCC->SR.bit.CSTS) {}
     CMCC->MAINT0.bit.INVALL = 1;
