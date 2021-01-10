@@ -2,7 +2,7 @@
   EEPROM like API that uses Arduino Zero's flash memory.
   Written by A. Christian
 
-  Copyright (c) 2015-2016 Arduino LLC.  All right reserved.
+  Copyright (c) 2015-2020 Arduino LLC.  All right reserved.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,15 +24,7 @@
 
 #include "FlashStorage.h"
 
-#ifndef EEPROM_EMULATION_SIZE
-#define EEPROM_EMULATION_SIZE 1024
-#endif
-
-typedef struct {
-  byte data[EEPROM_EMULATION_SIZE];
-  boolean valid;
-} EEPROM_EMULATION;
-
+#define TRUE 0x01
 
 class EEPROMClass {
 
@@ -40,45 +32,73 @@ class EEPROMClass {
     EEPROMClass(void);
 
     /**
-     * Read an eeprom cell
+     * Read an EEPROM cell
      * @param index
-     * @return value
+     * @return value or 0 if index is out of EEPROM range
      */
     uint8_t read(int);
 
     /**
-     * Write value to an eeprom cell
+     * Write value to an EEPROM cell. Will do nothing if index is out of EEPROM range.
      * @param index
      * @param value
      */
     void write(int, uint8_t);
 
     /**
-     * Update a eeprom cell
+     * Update a EEPROM cell
      * @param index
      * @param value
      */
     void update(int, uint8_t);
 
     /**
-     * Check whether the eeprom data is valid
-     * @return true, if eeprom data is valid (has been written at least once), false if not
+     * Check whether the EEPROM data is valid
+     * @return true, if EEPROM data is valid (has been written at least once), false if not
      */
     bool isValid();
 
     /**
-     * Write previously made eeprom changes to the underlying flash storage
+     * Write previously made EEPROM changes to the underlying flash storage
      * Use this with care: Each and every commit will harm the flash and reduce it's lifetime (like with every flash memory)
      */
     void commit();
 
-    uint16_t length() { return EEPROM_EMULATION_SIZE; }
+    /**
+     * Returns the size of the EEPROM in bytes
+     */
+    uint32_t length() { 
+      if (_initialized) {
+        return flash_class->length(); 
+      } else {
+        return 0; 
+      }
+    }
+
+    /**
+     * For using the EEPROM, you need to specify the underlying FlashClass pointer. For example, useful
+     * <code>
+     * Flash(my_eeprom_storage, EEPROM_EMULATION_SIZE);
+     * </code>
+     * outside setup() and loop() and provide "my_eeprom_storage" as pointer to this method. 
+     * EEPROM_EMULATION_SIZE specifies the size in bytes of your "virtual EEPROM" (1024, 2048, 4096, 8192). 
+     */
+    void setStorage(FlashClass* ptr) { 
+      flash_class = ptr; 
+      init();
+    }
+
+    /**
+     * Same as setStorage(), but forced the valid flag (before internal initalization is done) to true.
+     * Might be useful if you specify the flash-storage to a specific address of flash and maintain your own valid flag.
+     */
+    void setStorageForceValid(FlashClass*);
 
   private:
     void init();
-
+    FlashClass* flash_class;
     bool _initialized;
-    EEPROM_EMULATION _eeprom;
+    byte* _eeprom;
     bool _dirty;
 };
 

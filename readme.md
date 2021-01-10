@@ -8,8 +8,7 @@ code, but it can also be used to store user data.
 
 ## Supported hardware
 
-Currently, ATSAMD21 and ATSAMD51 cpu are supported (and consequently every board based
-on this cpu like the Arduino Zero or Aduino MKR1000).
+Currently, ATSAMD21 and ATSAMD51 cpu are supported (and consequently every board based on this cpu like the Arduino Zero or Aduino MKR1000).
 
 ## Limited number of writes
 
@@ -63,6 +62,8 @@ See [EmulateEEPROM](https://github.com/cmaglie/FlashStorage/tree/master/examples
 
 The API is very similar to the well known Arduino EEPROM.h API but with two additional functions:
 
+* `EEPROM.setStorage(FlashClass*)` is required to point the EEPROM implementation to the underlying flashclass pointer. This method in mandatory.
+* `EEPROM.setStorageForceValid(FlashClass*)` same as `setStorage()`, but forces the valid flag to true before EEPROM gets initialized. This can be useful if take care of the validity-status by yourself or if you don't care about the validity at all.
 * `EEPROM.isValid()` returns `true` if data in the EEPROM is valid or, in other words, if the data has been written at least once, otherwise EEPROM data is "undefined" and the function returns `false`.
 * `EEPROM.commit()` store the EEPROM data in flash. Use this with care: Every call writes the complete EEPROM data to flash. This will reduce the remaining flash-write-cycles. Don't call this method in a loop or [you will kill your flash soon](https://github.com/cmaglie/FlashStorage#limited-number-of-writes).
 
@@ -81,7 +82,6 @@ sketch for an example on how to do it.
 ### The content of the FlashStorage is erased each time a new sketch is uploaded?
 
 Yes, every time you upload a new sketch, the previous content of the FlashStorage is erased and filled with 0's. The FlashStorage library does not allow to set another default value.
-
 
 ### Do you recommend to use FLASH instead of EEPROM?
 
